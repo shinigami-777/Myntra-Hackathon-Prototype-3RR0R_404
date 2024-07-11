@@ -16,21 +16,7 @@ function Header() {
       </div>
       <nav className="categories">
         <ul>
-          <li className="dropdown-content1 dropdown-content">
-            <a href="mens.html">Men</a>
-          </li>
-          <li className="dropdown-content2 dropdown-content">
-            <a href="">Women</a>
-          </li>
-          <li className="dropdown-content3 dropdown-content">
-            <a href="">Kids</a>
-          </li>
-          <li className="dropdown-content4 dropdown-content">
-            <a href="">Home & Living</a>
-          </li>
-          <li className="dropdown-content5 dropdown-content">
-            <a href="">Beauty</a>
-          </li>
+          
           <li className="dropdown-content6 dropdown-content">
             <a href="/quiz">Quiz</a>
           </li>
@@ -46,9 +32,16 @@ function Header() {
           src="https://image.flaticon.com/icons/png/128/49/49116.png"
           alt=""
         />
-        <input type="text" placeholder="Search for products, brands and more" />
+        <input
+          type="text"
+          placeholder="Search for products, brands and more"
+        />
       </div>
-
+      <div className="chat-button">
+          <Link to="/Chatroom">
+          <button className="chat-button">Chatroom</button>
+          </Link>
+      </div>
       <div className="nav-last">
         <div>
           <a href="">
@@ -84,9 +77,11 @@ function Header() {
         </div>
 
         <div className="auth-buttons">
+          
           <Link to="/login">
             <button className="login-button">Login</button>
           </Link>
+         
         </div>
       </div>
     </header>

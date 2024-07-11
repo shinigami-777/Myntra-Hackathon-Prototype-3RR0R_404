@@ -17,33 +17,52 @@
 
 .search-div {
   display: flex;
-  width: 39%;
+  width: 49%;
   background-color: #eee;
   height: 40px;
   align-items: center;
   justify-content: flex-start;
-  border-radius: 3px;
-  margin-left: 20px; /* Optional: add some spacing */
+  border-radius: 7px;
+  margin-left: 50px; 
+  margin-right: 20px;
 }
 #searchpng {
-  width: 15px;
-  margin: 40px;
+  width: 100px;
+  margin: 2px;
   opacity: 0.5;
-  margin-left: 100px;
+  margin-left: 2px;
+  border-radius: 4px;
 }
 .search-div input {
-  width: 50%;
+  width: 100%;
   border: none;
-  margin-left: 2%;
+  margin-left: 2px;
   background-color: #eee;
 }
 input:focus, textarea:focus, select:focus {
   outline: none;
 }
+.chat-button {
+  background-color: #ff3e6c;
+  color: white;
+  border: none;
+  padding: 10px ; /* Adjust padding to your preference */
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  margin-left: 10px;
+  display: flex;
+  margin-left: 30px;
+  
+}
+
+.chat-button:hover {
+  background-color: #ff1c4f;
+}
 .nav-last {
   display: flex;
   align-items: center;
-  margin-left: 100px;
   margin-right: 5px;
 }
 .nav-last > div {
@@ -54,19 +73,12 @@ input:focus, textarea:focus, select:focus {
   font-weight: 500;
   align-items: center;
   padding-top: 5px;
-  margin-left: 50px;
+  margin-left: 30px;
 }
 #svg {
   height: 10px;
-  margin-left: 100px;
 }
-.auth-buttons {
-  display: flex;
-  align-items:center;
-  
-  gap: 5px; /* Adjust gap to your preference */
 
-}
 .login-button{
   background-color: #ff3e6c;
   color: white;
@@ -76,11 +88,11 @@ input:focus, textarea:focus, select:focus {
   font-size: 12px;
   border-radius: 4px;
   transition: background-color 0.3s ease;
-  margin-left: 0px;
+  margin-left: 10px;
   display: flex;
-  margin-left: 20px;
+  margin-left: 0px;
 }
 
-.signup-button:hover, .login-button:hover {
+ .login-button:hover {
   background-color: #ff1c4f;
 }
