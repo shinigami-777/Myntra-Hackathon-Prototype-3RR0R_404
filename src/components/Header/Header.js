@@ -32,10 +32,10 @@ function Header() {
             <a href="">Beauty</a>
           </li>
           <li className="dropdown-content6 dropdown-content">
-            <Link to="/quiz">Quiz</Link>
+            <a href="/quiz">Quiz</a>
           </li>
           <li className="dropdown-content7 dropdown-content">
-            <Link to="/trends">Fashion Trends</Link>
+            <a href="/trends">Fashion Trends</a>
           </li>
         </ul>
       </nav>
@@ -84,9 +84,6 @@ function Header() {
         </div>
 
         <div className="auth-buttons">
-          <Link to="/signup">
-            <button className="signup-button">Sign Up</button>
-          </Link>
           <Link to="/login">
             <button className="login-button">Login</button>
           </Link>

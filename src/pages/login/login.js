@@ -1,32 +1,35 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './login.css';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase/conf.js";
+
 
 function Login() {
   const [formData, setFormData] = useState({
-    mobileno: '',
+    email: '',
     password: '',
   });
-  const [alertMessage, setAlertMessage] = useState('');
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
   };
 
-  const checkCredentials = () => {
-    const { mobileno, password } = formData;
-    const arr = JSON.parse(localStorage.getItem('details')) || [];
-
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i].mobileno === mobileno && arr[i].password === password) {
-        window.location.href = '/bag'; 
-        return;
-      }
-    }
-
-    setAlertMessage('Invalid Mobile Number or Password');
-  };
+  const login = async() =>{
+    signInWithEmailAndPassword(auth, formData.email, formData.password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      console.log(user);
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      alert(errorMessage);
+    });
+  }
 
   const goToSignup = () => {
     window.location.href = '/signup'; 
@@ -46,9 +49,9 @@ function Login() {
           <form id="login">
             <input
               type="text"
-              id="mobileno"
-              placeholder="Mobile Number"
-              value={formData.mobileno}
+              id="email"
+              placeholder="Enter Email"
+              value={formData.email}
               onChange={handleInputChange}
             /><br />
             <input
@@ -64,8 +67,8 @@ function Login() {
             &<span id="small"> Privacy Policy</span>
           </p>
           <p>Don't have an account? <span onClick={goToSignup}>Signup</span></p>
-          <div id="alert">{alertMessage && <div>{alertMessage}</div>}</div>
-          <div className="continue" onClick={checkCredentials}>CONTINUE</div>
+
+          <div className="continue" onClick={login}>CONTINUE</div>
         </div>
       </div>
     </div>
