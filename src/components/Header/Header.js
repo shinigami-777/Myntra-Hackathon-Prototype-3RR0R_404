@@ -13,25 +13,8 @@ function Header() {
           />
         </Link>
       </div>
-      <nav className="categories">
-        <ul>
-          <li className="dropdown-content1 dropdown-content">
-            <a href="mens.html">Men</a>
-          </li>
-          <li className="dropdown-content2 dropdown-content">
-            <a href="">Women</a>
-          </li>
-          <li className="dropdown-content3 dropdown-content">
-            <a href="">Kids</a>
-          </li>
-          <li className="dropdown-content4 dropdown-content">
-            <a href="">Home & Living</a>
-          </li>
-          <li className="dropdown-content5 dropdown-content">
-            <a href="">Beauty</a>
-          </li>
-        </ul>
-      </nav>
+      
+    
 
       <div className="search-div">
         <img
@@ -80,9 +63,7 @@ function Header() {
         </div>
 
         <div className="auth-buttons">
-          <Link to="/signup">
-            <button className="signup-button">Sign Up</button>
-          </Link>
+          
           <Link to="/login">
             <button className="login-button">Login</button>
           </Link>
