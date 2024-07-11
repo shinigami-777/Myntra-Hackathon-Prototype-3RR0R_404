@@ -1,0 +1,9 @@
+nltk
+pandas
+flask
+flask_cors
+google.generativeai
+pytrends
+statsmodels
+requests
+urllib3

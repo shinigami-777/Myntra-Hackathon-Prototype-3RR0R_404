@@ -1,13 +1,14 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Header.css';
+// src/components/Header.js
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Header.css";
 
 function Header() {
   return (
     <header className="header sticky">
       <div>
-        <Link to ="/">
-          <img 
+        <Link to="/">
+          <img
             src="https://cdn.freelogovectors.net/wp-content/uploads/2021/02/myntra-logo-freelogovectors.net_.png"
             alt="logo"
           />
@@ -30,6 +31,12 @@ function Header() {
           <li className="dropdown-content5 dropdown-content">
             <a href="">Beauty</a>
           </li>
+          <li className="dropdown-content6 dropdown-content">
+            <Link to="/quiz">Quiz</Link>
+          </li>
+          <li className="dropdown-content7 dropdown-content">
+            <Link to="/trends">Fashion Trends</Link>
+          </li>
         </ul>
       </nav>
 
@@ -39,10 +46,7 @@ function Header() {
           src="https://image.flaticon.com/icons/png/128/49/49116.png"
           alt=""
         />
-        <input
-          type="text"
-          placeholder="Search for products, brands and more"
-        />
+        <input type="text" placeholder="Search for products, brands and more" />
       </div>
 
       <div className="nav-last">
