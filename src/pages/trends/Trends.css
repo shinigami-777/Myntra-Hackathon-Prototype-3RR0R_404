@@ -1,18 +1,31 @@
+/* src/pages/trends/Trends.css */
+
 .Trends {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  background: url("../../assets/front.jpg") no-repeat center center fixed; /* Adjust the path if necessary */
+  background-size: cover;
+  min-height: 100vh;
 }
 
 .trends-container {
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent background to make text readable */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
   text-align: center;
+  font-size: 30px;
+  margin-bottom: 20px;
+  color: #b553e7;
+  margin-right: 80px;
 }
 
 .search-bar {
@@ -32,14 +45,14 @@ h2 {
 .search-bar button {
   padding: 10px 20px;
   border: none;
-  background-color: #007bff;
+  background-color: #e44bd2;
   color: white;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .search-bar button:hover {
-  background-color: #0056b3;
+  background-color: #f53bb1;
 }
 
 .error {
@@ -66,7 +79,7 @@ h2 {
 }
 
 .recommendations a {
-  color: #007bff;
+  color: #be6aef;
   text-decoration: none;
 }
 
@@ -82,4 +95,8 @@ label {
 
 label input {
   margin-right: 10px;
+}
+
+.trend-plot {
+  margin-top: 20px;
 }
