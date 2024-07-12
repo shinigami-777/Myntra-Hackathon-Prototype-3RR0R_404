@@ -1,8 +1,9 @@
 import React , { useState } from 'react';
 import { Link } from 'react-router-dom'; 
 import './signup.css';
-import { auth } from "../../firebase/conf.js";
+import { auth , db } from "../../firebase/conf.js";
 import {createUserWithEmailAndPassword} from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore"; 
 
 const loginPage = () => {
   window.location.href = "./login";
@@ -11,6 +12,7 @@ const loginPage = () => {
 function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
   //const [error, setError] = useState(null);
   
   const signIn = async () => {
@@ -19,7 +21,21 @@ function Signup() {
     // Signed up 
     const user = userCredential.user;
     console.log(user)
-    // ...
+
+    // when user is created we store username, email and points(0 at start) in database
+    const signIn = async () => {
+      try {
+        const docRef = await addDoc(collection(db, "users"), {
+          username: username,
+          points: 0,
+          email: email
+        });
+        console.log("Document written with ID: ", docRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+    }
+    
   })
   .catch((error) => {
     const errorCode = error.code;
@@ -99,7 +115,9 @@ function Signup() {
             <p className="signinheader">CREATE A NEW ACCOUNT</p>
           </div>
           <form id="formContainer">
-            
+          <input type="username" name="Username" id="username" placeholder="Username" 
+            onChange={(e) => setUsername(e.target.value)}
+            required />
             <input type="email" name="email" id="email" placeholder="Email id" 
             onChange={(e) => setEmail(e.target.value)}
             required />
