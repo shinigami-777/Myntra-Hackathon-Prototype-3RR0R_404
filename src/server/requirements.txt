@@ -7,3 +7,7 @@ pytrends
 statsmodels
 requests
 urllib3
+scikit-learn
+plotly
+matplotlib
+langchain_community
