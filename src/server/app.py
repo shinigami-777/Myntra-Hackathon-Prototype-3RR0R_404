@@ -8,8 +8,10 @@ import torch.nn as nn
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import time
-import zipfile
 from helper import get_gemini_response, get_recommendations_corr,generate_suggestions,get_gemini_response_no_json
+import json
+import base64
+
 app = Flask(__name__)
 CORS(app)
 
@@ -84,14 +86,14 @@ def fashion_trends():
     return jsonify(response)
 
 
-llm_analyse = []
-value = ""
 
-@app.route('/api/trend_generation', methods=['POST'])
-def trend_generation():
+@app.route('/api/trend_analysis', methods=['POST'])
+def trend_analysis():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
+    
     file = request.files['file']
+    
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
@@ -157,7 +159,6 @@ def trend_generation():
     optimizer = torch.optim.Adam(predictorModel.parameters(), lr=0.001)
 
     epochs = 15
-    start_time = time.time()
 
     for epoch in range(epochs):
         for seq, y_train in train_data:
@@ -181,7 +182,7 @@ def trend_generation():
             preds.append(predictorModel(seq).item())
 
     true_prediction = scaler.inverse_transform(np.array(preds[window_size:]).reshape(1, -1)).squeeze()
-    llm_analyse = true_prediction
+    
     start_date_train = '2019-07-07'
     start_date_pred = '2024-07-14'
     date_range_train = pd.date_range(start=start_date_train, periods=len(train_set), freq='7D')
@@ -200,37 +201,30 @@ def trend_generation():
     plt.savefig(img, format='png')
     img.seek(0)
     plt.close()
-    return send_file(img, mimetype='image/png')
+    img_str = base64.b64encode(img.getvalue()).decode('utf-8')
 
-
-@app.route('/api/trend_analysis_response', methods=['GET'])
-def trend_analysis_response():
-    global llm_analyse, value
-    if not llm_analyse:
-        return jsonify({"error": "No trend analysis data available"}), 404
-    
-    print(value,llm_analyse)
-    
     prompt = f"""
         As a fashion trends analyst, you've been provided with time series forecasting data for the fashion trend of {value}:
-        {llm_analyse}
+        {true_prediction}
         Based on this sequence, provide brief and coherent recommendations to the user:
         - If the trend appears promising and worth investing in, suggest reasons and potential benefits.
         - If the trend indicates a downturn or suggests caution, recommend alternative options or considerations.
         - If the trend shows no significant change, advise the user accordingly on its stability.
-        DON'T USE any asterisks (*) in your response to bolden headers and try using bullet points with numbers.
+        Respond in a HTML formatted manner so that it can be integrated into a javascript webpage!
         Your Response:"""
 
     try:
         response = get_gemini_response_no_json(prompt)
-        # Log response for debugging
         print("LLM Analysis Response:", response)
-        return jsonify({"response": response})
     except Exception as e:
-        # Log the exception for debugging
         print("Error in LLM Analysis:", str(e))
-        return jsonify({"error": str(e)}), 500
+        response = str(e)
+
+    return jsonify({
+        "response": response,
+        "image": img_str
+    })
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, use_reloader=False)

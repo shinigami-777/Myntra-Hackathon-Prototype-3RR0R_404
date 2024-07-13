@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchFashionTrends, generateTrendPlot, analyzeTrend } from "../../api";
+import { fetchFashionTrends, generateAndAnalyzeTrend } from "../../api";
 import "./Trends.css";
 
 const loadGoogleTrendsScript = () => {
@@ -28,21 +28,11 @@ const Trends = () => {
   const [generateSuggestions, setGenerateSuggestions] = useState(false);
   const [file, setFile] = useState(null);
   const [plotUrl, setPlotUrl] = useState("");
-  const [showLLMButton, setShowLLMButton] = useState(false); // State to control visibility of LLM analysis button
+  const [llmResponse, setLlmResponse] = useState(""); // State to store LLM response
 
   const handleFetchTrends = async () => {
     try {
       const data = await fetchFashionTrends(keyword, generateSuggestions);
-      setTrendData(data);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const handleGenerateSuggestions = async () => {
-    try {
-      const data = await fetchFashionTrends(keyword, true); // Fetch with generate_suggestions flag
       setTrendData(data);
       setError(null);
     } catch (err) {
@@ -56,23 +46,16 @@ const Trends = () => {
 
     if (selectedFile) {
       try {
-        const plotUrl = await generateTrendPlot(selectedFile);
-        setPlotUrl(plotUrl);
-        setShowLLMButton(true); // Show LLM analysis button after successful plot generation
+        const { imageUrl, response } = await generateAndAnalyzeTrend(
+          selectedFile
+        );
+        console.log(imageUrl);
+        setPlotUrl(imageUrl);
+        setLlmResponse(response); // Store LLM response
       } catch (error) {
-        console.error("Error generating trend plot:", error);
+        console.error("Error generating and analyzing trend:", error);
         setError(error.message);
       }
-    }
-  };
-
-  const handleLLMAnalysis = async () => {
-    try {
-      await analyzeTrend();
-      alert("LLM Analysis performed successfully.");
-    } catch (error) {
-      console.error("Error performing LLM Analysis:", error);
-      alert("Failed to perform LLM Analysis.");
     }
   };
 
@@ -139,6 +122,15 @@ const Trends = () => {
                   <a href={rec.link} target="_blank" rel="noopener noreferrer">
                     Product Link
                   </a>
+                  {rec.image_link && (
+                    <div>
+                      <img
+                        src={rec.image_link}
+                        alt="Product"
+                        style={{ maxWidth: "100%", height: "auto" }}
+                      />
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -153,7 +145,7 @@ const Trends = () => {
                 Data?
               </label>
               {generateSuggestions && (
-                <button onClick={handleGenerateSuggestions}>
+                <button onClick={handleFetchTrends}>
                   Generate Suggestions
                 </button>
               )}
@@ -174,15 +166,17 @@ const Trends = () => {
           </div>
         )}
 
-        {trendData && trendData.suggestions && (
-          <div className="trend-plots">
-            <h3>Trend Plots</h3>
-            {flattenSuggestions(trendData.suggestions).map(
-              (suggestion, index) => (
-                <div key={index} id={`trend-${index}`} className="trend-plot">
-                  {/* Placeholder for Google Trends plot */}
-                </div>
-              )
+        {plotUrl && (
+          <div className="plot-image">
+            <h3>Forecasting for the fashion trend:</h3>
+            <img src={plotUrl} alt="Trend Plot" />
+            {/* Log plotUrl outside of JSX */}
+            {console.log("Plot URL:", plotUrl)}
+            {llmResponse && (
+              <div>
+                {/* <h3>LLM Analysis</h3> */}
+                <div dangerouslySetInnerHTML={{ __html: llmResponse }} />
+              </div>
             )}
           </div>
         )}
@@ -190,17 +184,6 @@ const Trends = () => {
         <div className="file-upload">
           <h3>Upload CSV for Trend Plot</h3>
           <input type="file" accept=".csv" onChange={handleFileUpload} />
-          {plotUrl && (
-            <div className="plot-image">
-              <h3>Generated Plot</h3>
-              <img src={plotUrl} alt="Trend Plot" />
-              {showLLMButton && (
-                <button onClick={handleLLMAnalysis}>
-                  LLM Analysis on Trend Suggestions
-                </button>
-              )}
-            </div>
-          )}
         </div>
       </div>
     </div>

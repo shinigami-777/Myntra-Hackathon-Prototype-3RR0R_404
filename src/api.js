@@ -46,52 +46,36 @@ export const fetchFashionTrends = async (keyword, generateSuggestions) => {
   }
 };
 
-export const generateTrendPlot = async (file) => {
+export const generateAndAnalyzeTrend = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
 
   try {
-    const response = await fetch("http://localhost:5000/api/trend_generation", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to generate trend plot");
-    }
-
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    return url;
-  } catch (error) {
-    console.error("Error generating trend plot:", error);
-    throw error;
-  }
-};
-
-export const analyzeTrend = async () => {
-  try {
-    const response = await fetch(
-      "http://localhost:5000/api/trend_analysis_response",
+    const plotResponse = await fetch(
+      "http://localhost:5000/api/trend_analysis",
       {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
+        method: "POST",
+        body: formData,
       }
     );
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to analyze trend");
+    if (!plotResponse.ok) {
+      const errorData = await plotResponse.json();
+      throw new Error(errorData.error || "Failed to generate trend plot");
     }
 
-    const data = await response.json();
-    return data;
+    const responseData = await plotResponse.json();
+    const { response, image } = responseData;
+
+    // Ensure 'image' is a Base64 string
+    const imageUrl = `data:image/png;base64,${image}`;
+
+    return {
+      response: response,
+      imageUrl: imageUrl,
+    };
   } catch (error) {
-    console.error("Error analyzing trend:", error);
+    console.error("Error generating and analyzing trend:", error);
     throw error;
   }
 };

@@ -57,7 +57,7 @@ def get_recommendations_corr(user_input, top_n=5):
         correlations = count_df.corrwith(user_count_df.iloc[0], axis=1)
         
         top_correlations = correlations.nlargest(top_n)
-        recommendations = df.loc[top_correlations.index][['Text', 'link']]
+        recommendations = df.loc[top_correlations.index][['Text', 'link','image_link']]
         return recommendations
     else:
         return pd.DataFrame()
