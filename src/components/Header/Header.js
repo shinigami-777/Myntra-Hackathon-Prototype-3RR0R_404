@@ -22,6 +22,9 @@ function Header() {
         <button className="button-common trends-button">Fashion Trends</button>
       </Link>
      
+      <Link to="/Chatbot">
+        <button className="button-common chatbot-button">Chatbot</button>
+      </Link>
       <Link to="/Chatroom">
         <button className="button-common chat-button">Chatroom</button>
       </Link>
