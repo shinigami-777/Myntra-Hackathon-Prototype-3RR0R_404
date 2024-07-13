@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './signup.css';
 import { auth , db } from "../../firebase/conf.js";
 import {createUserWithEmailAndPassword} from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore"; 
+import { doc, setDoc } from "firebase/firestore"; 
 
 const loginPage = () => {
   window.location.href = "./login";
@@ -17,24 +17,18 @@ function Signup() {
   
   const signIn = async () => {
     createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
+  .then( async (userCredential) => {
     // Signed up 
     const user = userCredential.user;
     console.log(user)
 
     // when user is created we store username, email and points(0 at start) in database
-    const signIn = async () => {
-      try {
-        const docRef = await addDoc(collection(db, "users"), {
-          username: username,
-          points: 0,
-          email: email
-        });
-        console.log("Document written with ID: ", docRef.id);
-      } catch (e) {
-        console.error("Error adding document: ", e);
-      }
-    }
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      username:username,
+      email:email,
+      points: 0,
+    });
     
   })
   .catch((error) => {
