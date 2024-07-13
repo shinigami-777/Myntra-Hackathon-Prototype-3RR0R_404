@@ -1,6 +1,6 @@
 .header {
   display: flex;
-  height: 80px;
+  height: 100px;
   align-items: center;
   background-color: white;
   padding: 0 20px; 
@@ -15,51 +15,35 @@
 }
 
 
-.search-div {
-  display: flex;
-  width: 49%;
-  background-color: #eee;
-  height: 40px;
-  align-items: center;
-  justify-content: flex-start;
-  border-radius: 7px;
-  margin-left: 50px; 
-  margin-right: 20px;
-}
-#searchpng {
-  width: 100px;
-  margin: 2px;
-  opacity: 0.5;
-  margin-left: 2px;
-  border-radius: 4px;
-}
-.search-div input {
-  width: 100%;
+
+
+.button-common {
+  background-color: #f082c4;
+  color: rgb(22, 8, 25);
   border: none;
-  margin-left: 2px;
-  background-color: #eee;
-}
-input:focus, textarea:focus, select:focus {
-  outline: none;
-}
-.chat-button {
-  background-color: #ff3e6c;
-  color: white;
-  border: none;
-  padding: 10px ; /* Adjust padding to your preference */
+  padding: 10px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   border-radius: 4px;
   transition: background-color 0.3s ease;
-  margin-left: 10px;
   display: flex;
-  margin-left: 30px;
-  
+  align-items: center;
+}
+.quiz-button{
+  margin-left: 100px;
+}
+.trends-button {
+  margin-left: 50px;
+}
+.button-common:hover {
+  background-color: #f3700c;
 }
 
-.chat-button:hover {
-  background-color: #ff1c4f;
+.chat-button {
+  margin-left: 50px;
+  margin-right: 250px;
 }
+
 .nav-last {
   display: flex;
   align-items: center;
@@ -79,20 +63,6 @@ input:focus, textarea:focus, select:focus {
   height: 10px;
 }
 
-.login-button{
-  background-color: #ff3e6c;
-  color: white;
-  border: none;
-  padding: 10px ; /* Adjust padding to your preference */
-  cursor: pointer;
-  font-size: 12px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-  margin-left: 10px;
-  display: flex;
-  margin-left: 0px;
-}
-
- .login-button:hover {
-  background-color: #ff1c4f;
+.login-button {
+  margin-right: 2px;
 }
