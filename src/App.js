@@ -6,6 +6,7 @@ import Signup from "./pages/signup/signup";
 import Quiz from "./pages/quiz/Quiz";
 import Trends from "./pages/trends/Trends";
 import Chatroom from './pages/Chatroom/Chatroom';
+import Chatbot from "./pages/Chatbot/Chatbot";
 
 
 import "./App.css";
@@ -21,6 +22,7 @@ function App() {
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/trends" element={<Trends />} />
           <Route path="/Chatroom" element={<Chatroom />} />
+          <Route path="/Chatbot" element={<Chatbot />} />
         </Routes>
       </div>
     </Router>
