@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchFashionTrends } from "../../api";
+import { fetchFashionTrends, generateTrendPlot, analyzeTrend } from "../../api";
 import "./Trends.css";
 
 const loadGoogleTrendsScript = () => {
@@ -26,6 +26,9 @@ const Trends = () => {
   const [trendData, setTrendData] = useState(null);
   const [error, setError] = useState(null);
   const [generateSuggestions, setGenerateSuggestions] = useState(false);
+  const [file, setFile] = useState(null);
+  const [plotUrl, setPlotUrl] = useState("");
+  const [showLLMButton, setShowLLMButton] = useState(false); // State to control visibility of LLM analysis button
 
   const handleFetchTrends = async () => {
     try {
@@ -47,6 +50,32 @@ const Trends = () => {
     }
   };
 
+  const handleFileUpload = async (event) => {
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+
+    if (selectedFile) {
+      try {
+        const plotUrl = await generateTrendPlot(selectedFile);
+        setPlotUrl(plotUrl);
+        setShowLLMButton(true); // Show LLM analysis button after successful plot generation
+      } catch (error) {
+        console.error("Error generating trend plot:", error);
+        setError(error.message);
+      }
+    }
+  };
+
+  const handleLLMAnalysis = async () => {
+    try {
+      await analyzeTrend();
+      alert("LLM Analysis performed successfully.");
+    } catch (error) {
+      console.error("Error performing LLM Analysis:", error);
+      alert("Failed to perform LLM Analysis.");
+    }
+  };
+
   useEffect(() => {
     const renderTrends = async () => {
       if (trendData && trendData.suggestions) {
@@ -57,7 +86,7 @@ const Trends = () => {
         flattenedSuggestions.forEach((suggestion, index) => {
           try {
             window.trends.embed.renderExploreWidgetTo(
-              document.getElementById(`trend-${index}`), // Ensuring the correct element is targeted
+              document.getElementById(`trend-${index}`),
               "TIMESERIES",
               {
                 comparisonItem: [
@@ -157,6 +186,22 @@ const Trends = () => {
             )}
           </div>
         )}
+
+        <div className="file-upload">
+          <h3>Upload CSV for Trend Plot</h3>
+          <input type="file" accept=".csv" onChange={handleFileUpload} />
+          {plotUrl && (
+            <div className="plot-image">
+              <h3>Generated Plot</h3>
+              <img src={plotUrl} alt="Trend Plot" />
+              {showLLMButton && (
+                <button onClick={handleLLMAnalysis}>
+                  LLM Analysis on Trend Suggestions
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

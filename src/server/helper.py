@@ -10,6 +10,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 import matplotlib.pyplot as plt
 from langchain_community.llms import HuggingFaceHub
 import google.generativeai as genai
+from io import BytesIO
 
 genai.configure(api_key='AIzaSyBRTQgiA55-DsG3ssjitrMf_4-f9Q9xW1A')
 
@@ -19,6 +20,10 @@ def get_gemini_response(input_text):
     response = model.generate_content(input_text)
     return response.text
 
+def get_gemini_response_no_json(input_text):
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(input_text)
+    return response.text
 
 df = pd.read_csv('myntra_product_data.csv')
 df = df.dropna(subset=['product_description'])
@@ -131,5 +136,11 @@ def decompose_data(df, share_type='count', samples=250, period=24):
     axs[3].scatter(y=residual, x=range(len(residual)), alpha=0.5)
     axs[3].grid()
     
-    plt.show()
+    plt.tight_layout()
+    
+    img = BytesIO()
+    fig.savefig(img, format='png')
+    img.seek(0)
+    
+    return img
 

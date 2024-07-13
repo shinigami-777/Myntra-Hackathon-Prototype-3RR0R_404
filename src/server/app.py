@@ -1,8 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
-import json
-from helper import get_gemini_response, get_recommendations_corr, generate_suggestions  # Ensure generate_suggestions is imported
-
+import pandas as pd
+import matplotlib.pyplot as plt
+from io import BytesIO
+import torch
+import torch.nn as nn
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+import time
+import zipfile
+from helper import get_gemini_response, get_recommendations_corr,generate_suggestions,get_gemini_response_no_json
 app = Flask(__name__)
 CORS(app)
 
@@ -76,5 +83,154 @@ def fashion_trends():
     
     return jsonify(response)
 
+
+llm_analyse = []
+value = ""
+
+@app.route('/api/trend_generation', methods=['POST'])
+def trend_generation():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    df = pd.read_csv(file, index_col=0, parse_dates=True)
+    
+    value = df.iloc[0, 0]
+    
+    df.rename(columns={'Category: All categories': 'data'}, inplace=True)
+    df = df.iloc[1:].reset_index(drop=True)
+
+    start_date = '2019-07-07'
+    date_range = pd.date_range(start=start_date, periods=len(df), freq='7D')
+    df['date'] = [date.date() for date in date_range]
+
+    num_new_rows = 20
+    date_freq = pd.DateOffset(weeks=1)
+    start_index = len(df)
+
+    for i in range(num_new_rows):
+        new_date = (df['date'].iloc[-1] + date_freq).date()
+        new_row = {'data': 0, 'date': new_date}
+        df.loc[start_index + i] = new_row
+
+    df['data'] = pd.to_numeric(df['data'])
+
+    y = df['data'].values.astype(float)
+    test_size = 20
+    train_set = y[:-test_size]
+
+    scaler = MinMaxScaler(feature_range=(-1, 1))
+    train_norm = scaler.fit_transform(train_set.reshape(-1, 1))
+    train_norm = torch.FloatTensor(train_norm).view(-1)
+
+    window_size = 20
+
+    def input_data(seq, ws):
+        out = []
+        L = len(seq)
+        for i in range(L - ws):
+            window = seq[i:i + ws]
+            label = seq[i + ws:i + ws + 1]
+            out.append((window, label))
+        return out
+
+    train_data = input_data(train_norm, window_size)
+
+    class Trends(nn.Module):
+        def __init__(self, input_size=1, hidden_size=100, output_size=1):
+            super().__init__()
+            self.hidden_size = hidden_size
+            self.lstm = nn.LSTM(input_size, hidden_size)
+            self.linear = nn.Linear(hidden_size, output_size)
+            self.hidden = (torch.zeros(1, 1, self.hidden_size),
+                           torch.zeros(1, 1, self.hidden_size))
+
+        def forward(self, seq):
+            out, self.hidden = self.lstm(seq.view(len(seq), 1, -1), self.hidden)
+            pred = self.linear(out.view(len(seq), -1))
+            return pred[-1]
+
+    predictorModel = Trends()
+    criterion = nn.MSELoss()
+    optimizer = torch.optim.Adam(predictorModel.parameters(), lr=0.001)
+
+    epochs = 15
+    start_time = time.time()
+
+    for epoch in range(epochs):
+        for seq, y_train in train_data:
+            optimizer.zero_grad()
+            predictorModel.hidden = (torch.zeros(1, 1, predictorModel.hidden_size),
+                                     torch.zeros(1, 1, predictorModel.hidden_size))
+            y_pred = predictorModel(seq)
+            loss = criterion(y_pred, y_train)
+            loss.backward()
+            optimizer.step()
+
+    future = 20
+    preds = train_norm[-window_size:].tolist()
+    predictorModel.eval()
+
+    for i in range(future):
+        seq = torch.FloatTensor(preds[-window_size:])
+        with torch.no_grad():
+            predictorModel.hidden = (torch.zeros(1, 1, predictorModel.hidden_size),
+                                     torch.zeros(1, 1, predictorModel.hidden_size))
+            preds.append(predictorModel(seq).item())
+
+    true_prediction = scaler.inverse_transform(np.array(preds[window_size:]).reshape(1, -1)).squeeze()
+    llm_analyse = true_prediction
+    start_date_train = '2019-07-07'
+    start_date_pred = '2024-07-14'
+    date_range_train = pd.date_range(start=start_date_train, periods=len(train_set), freq='7D')
+    date_range_pred = pd.date_range(start=start_date_pred, periods=len(true_prediction), freq='7D')
+
+    plt.figure(figsize=(12, 4))
+    plt.plot(date_range_train, train_set, color='black', label='Interest Over Time')
+    plt.plot(date_range_pred, true_prediction, color='green', label='Predicted Interest Over Time')
+    plt.title('Interest Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Interest')
+    plt.legend()
+    plt.grid(True)
+
+    img = BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+    plt.close()
+    return send_file(img, mimetype='image/png')
+
+
+@app.route('/api/trend_analysis_response', methods=['GET'])
+def trend_analysis_response():
+    global llm_analyse, value
+    if not llm_analyse:
+        return jsonify({"error": "No trend analysis data available"}), 404
+    
+    print(value,llm_analyse)
+    
+    prompt = f"""
+        As a fashion trends analyst, you've been provided with time series forecasting data for the fashion trend of {value}:
+        {llm_analyse}
+        Based on this sequence, provide brief and coherent recommendations to the user:
+        - If the trend appears promising and worth investing in, suggest reasons and potential benefits.
+        - If the trend indicates a downturn or suggests caution, recommend alternative options or considerations.
+        - If the trend shows no significant change, advise the user accordingly on its stability.
+        DON'T USE any asterisks (*) in your response to bolden headers and try using bullet points with numbers.
+        Your Response:"""
+
+    try:
+        response = get_gemini_response_no_json(prompt)
+        # Log response for debugging
+        print("LLM Analysis Response:", response)
+        return jsonify({"response": response})
+    except Exception as e:
+        # Log the exception for debugging
+        print("Error in LLM Analysis:", str(e))
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
