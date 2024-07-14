@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-//import "Chatbot.css";
+import "./Chatbot.css";
 import ChatHistory from "../../components/ChatHistory";
 import Loading from "../../components/Loading";
 
@@ -51,13 +51,15 @@ const Chatbot = () => {
 
   return (
     <div className="container">
+      <div className="header">
       <h1 className="container-heading">Myntra-Bot</h1>
-
-      <div className="chat-container">
-        <ChatHistory chatHistory={chatHistory} />
-        <Loading isLoading={isLoading} />
       </div>
 
+    <div className="chatspace">
+     <div className="chat-container">
+        <ChatHistory chatHistory={chatHistory} />
+        <Loading isLoading={isLoading} />
+     </div>
       <div className="chatbox">
         <input
           type="text"
@@ -66,20 +68,16 @@ const Chatbot = () => {
           value={userInput}
           onChange={handleUserInput}
         />
-        <button
-          className="sendmessage"
-          onClick={sendMessage}
-          disabled={isLoading}
-        >
-          Send
-        </button>
       </div>
-      <button
-        className="clearchat"
-        onClick={clearChat}
-      >
-        Clear Chat
+        <button
+          className="sendmessage" onClick={sendMessage}  disabled={isLoading}>
+        Send
+        </button>
+      
+      <button className="clearchat" onClick={clearChat}>
+      Clear
       </button>
+    </div>
     </div>
   );
 };
