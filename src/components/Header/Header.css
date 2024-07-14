@@ -1,6 +1,6 @@
 .header {
   display: flex;
-  height: 100px;
+  height: 120px;
   align-items: center;
   background-color: white;
   padding: 0 20px; 
@@ -16,34 +16,40 @@
 
 
 
+.img{
+  height:20px
+}
 
 .button-common {
   background-color: #f082c4;
   color: rgb(22, 8, 25);
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  font-size: 14px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-  display: flex;
+  border: black;
+  border-style: solid;
+  border-width: 2px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 10px;
   align-items: center;
+  font-weight: bold;
+  text-align: center;
+  width: 120px;
+  height: 60px;
 }
 .quiz-button{
-  margin-left: 100px;
+  margin-left: 50px;
 }
 .trends-button {
   margin-left: 50px;
 }
 .button-common:hover {
-  background-color: #f3700c;
+  background-color: #f34d0c;
 }
 .chatbot-button{
   margin-left: 50px;
 }
 .chat-button {
   margin-left: 50px;
-  margin-right: 250px;
+  margin-right: 600px;
 }
 
 .nav-last {
@@ -62,9 +68,12 @@
   margin-left: 30px;
 }
 #svg {
-  height: 10px;
+  height: 40px;
+  width: 40px;
 }
 
 .login-button {
+  background-color: #75084a;
   margin-right: 2px;
+  cursor: pointer;
 }

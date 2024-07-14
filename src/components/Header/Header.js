@@ -64,7 +64,7 @@ function Header() {
 
         <div className="auth-buttons">
           <Link to="/login">
-            <button className="button-common login-button">Login</button>
+            <button className="login-button">Login</button>
           </Link>
         </div>
       </div>

@@ -5,15 +5,15 @@ function Slideshow() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const slides = [
     {
-      image: 'https://assets.myntassets.com/f_webp,w_980,c_limit,fl_progressive,dpr_2.0/assets/images/2021/7/19/bc0bb077-6ca5-414f-a30a-b7f8e4e2e8c11626700392540-H-N_Desk_Banner--1-.jpg',
+      image: '../../assets/banner1.jpg',
       alt: 'Slide 1',
     },
     {
-      image: 'https://assets.myntassets.com/f_webp,w_980,c_limit,fl_progressive,dpr_2.0/assets/images/2021/7/19/0561c26e-e90f-49e4-ba4f-3158a97179f21626700545599-Occasion_wear_Desk.jpg',
+      image: '../../assets/banner2.jpg',
       alt: 'Slide 2',
     },
     {
-      image: 'https://assets.myntassets.com/f_webp,w_980,c_limit,fl_progressive,dpr_2.0/assets/images/2021/7/19/53a9d49b-85d7-40d4-a393-98435d3d04e31626700661018-cat-fest-dk-april.jpg',
+      image: '../../assets/banner3.jpg',
       alt: 'Slide 3',
     },
   ];
