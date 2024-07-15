@@ -169,7 +169,11 @@ const Trends = () => {
         {plotUrl && (
           <div className="plot-image">
             <h3>Forecasting for the fashion trend:</h3>
-            <img src={plotUrl} alt="Trend Plot" />
+            <img
+              src={plotUrl}
+              alt="Trend Plot"
+              style={{ width: "600px", height: "300px" }}
+            />
             {/* Log plotUrl outside of JSX */}
             {console.log("Plot URL:", plotUrl)}
             {llmResponse && (
