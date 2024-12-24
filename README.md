@@ -1,7 +1,8 @@
 # Myntra-Hackathon-Prototype-3RR0R_404
 
 ## Description
-This is the Phase 2 submission for the [Myntra HackerRamp: WeForShe 2024](https://unstop.com/hackathons/myntra-hackerramp-weforshe-2024-myntra-1025692) from team 3RR0R_404. <br>The new features and their functionality is implemented over a clone of Myntra Website. The web app is made using React for frontend (Chatrooms and Chatbot) , firebase for login and the trend forecasting ,analysis and customized quiz generation using python. The Gemini - Inference API is used for quiz generation and uptrend/downtrend analysis.
+This is the Phase 2 submission for the [Myntra HackerRamp: WeForShe 2024](https://unstop.com/hackathons/myntra-hackerramp-weforshe-2024-myntra-1025692) from team 3RR0R_404. <br>The new features and their functionality is implemented over a clone of Myntra Website. The web app is made using React for frontend (Chatrooms and Chatbot) , firebase for login and the trend forecasting ,analysis and customized quiz generation using python. The Gemini - Inference API is used for quiz generation and uptrend/downtrend analysis. \
+_P.S.- The API keys used in this have been deleted. Use your own in place of the api keys in code._
 ## Steps To host the functional prototype website locally from this Repository
 1. Clone the Repo
 ```sh
